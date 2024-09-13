@@ -1,0 +1,28 @@
+name: mediashin
+description: "Windows Graphics User Interface for basic video tools."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  fluent_ui: ^4.4.0
+  bitsdojo_window: ^0.1.6
+  window_manager: ^0.4.2
+  system_theme: ^3.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-VariableFont_wdth,wght.ttf
