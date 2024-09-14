@@ -14,4 +14,7 @@ final List<MediashinFunction> pages = [
   const MediashinFunction(4, 'Extract1', 'Extract subtitles from video.'),
   const MediashinFunction(5, 'Extract2', 'Extract images from video.'),
   const MediashinFunction(6, 'Extract3', 'Extract thumbnail from video.'),
+  const MediashinFunction(7, 'Extract4', 'Extract video metadata.'),
+  const MediashinFunction(8, 'Extract5', 'Extract audio metadata.'),
+  const MediashinFunction(9, 'Extract6', 'Extract subtitle metadata.'),
 ];

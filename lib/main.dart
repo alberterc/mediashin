@@ -17,7 +17,7 @@ void _initWindow() => doWhenWindowReady(() async {
   await windowManager.ensureInitialized();
   const initialSize = Size(960, 540);
   appWindow
-    ..minSize = const Size(320, 180)
+    ..minSize = initialSize
     ..size = initialSize
     ..alignment = Alignment.center
     ..show();
