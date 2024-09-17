@@ -44,11 +44,14 @@ class _WindowTitleBarState extends State<WindowTitleBar> {
           Expanded(
             child: MoveWindow(
               onDoubleTap: maximizeOrRestore,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.title ?? '',
-                  style: FluentTheme.of(context).typography.caption
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    widget.title ?? '',
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
                 ),
               )
             )
