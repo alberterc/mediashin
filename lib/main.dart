@@ -1,10 +1,7 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:mediashin/collections/routes.dart';
 import 'package:system_theme/system_theme.dart';
-import 'package:window_manager/window_manager.dart';
-
-import 'constants/colors.dart';
-import 'pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +11,6 @@ void main() async {
 
 void _initWindow() => doWhenWindowReady(() async {
   await SystemTheme.accentColor.load();
-  await windowManager.ensureInitialized();
   const initialSize = Size(960, 540);
   appWindow
     ..minSize = initialSize
@@ -28,20 +24,16 @@ class MediashinApp extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
+    return FluentApp.router(
       debugShowCheckedModeBanner: false, // remove after development
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
+      routerDelegate: router.routerDelegate,
       title: 'Mediashin',
       color: SystemTheme.accentColor.accent.toAccentColor(),
       locale: const Locale('en', 'US'),
       darkTheme: _createTheme(Brightness.dark),
       theme: _createTheme(Brightness.light),
-      home: WindowBorder(
-        color: AppColors.primaryColor,
-        child: Container(
-          color: AppColors.primaryColor,
-          child: const HomePage(),
-        )
-      ),
     );
   }
 }

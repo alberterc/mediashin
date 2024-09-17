@@ -1,8 +1,9 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:go_router/go_router.dart';
 
-import '../widgets/title_bar.dart';
-import 'pages.dart';
+import '../components/window_title_bar.dart';
+import '../collections/pages.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -51,7 +52,7 @@ Widget _buildBody(BuildContext context) {
           SizedBox(
             width: 825,
             // need to change into stateful so height can change when window is resized
-            height: appWindow.size.height - appWindow.size.height * 45 / 100,
+            height: appWindow.size.height - appWindow.size.height * 46 / 100,
             child: GridView(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -71,25 +72,22 @@ Widget _buildBody(BuildContext context) {
   );
 }
 
-Widget _buildCard(String title, String desc, BuildContext context) => SizedBox(
-  width: 267,
-  height: 100,
-  child: Button(
-    style: const ButtonStyle(
-      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
-      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0)))),
-    ),
-    child: Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: FluentTheme.of(context).typography.bodyStrong, textAlign: TextAlign.left),
-          const SizedBox(height: 4.0),
-          Text(desc, style: FluentTheme.of(context).typography.body, textAlign: TextAlign.left)
-        ],
-      ),
-    ),
-    onPressed: () {},
+Widget _buildCard(String title, String desc, BuildContext context) => Button(
+  style: const ButtonStyle(
+    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
+    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0)))),
   ),
+  child: Align(
+    alignment: Alignment.centerLeft,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: FluentTheme.of(context).typography.bodyStrong, textAlign: TextAlign.left),
+        const SizedBox(height: 4.0),
+        Text(desc, style: FluentTheme.of(context).typography.body, textAlign: TextAlign.left)
+      ],
+    ),
+  ),
+  onPressed: () => GoRouter.of(context).push('/${title.toLowerCase()}'),
 );
