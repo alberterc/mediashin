@@ -5,7 +5,7 @@ class AppColors {
   static const Color primaryColor = Color(0xFF191927);
 
   // Secondary colors
-  static const Color secondaryColor = Color.fromARGB(0, 69, 69, 116);
+  static const Color secondaryColor = Color.fromARGB(255, 69, 69, 116);
   
   // Surface colors
   static const Color surfaceColor = Color(0xFFFFFFFF);
@@ -15,4 +15,5 @@ class AppColors {
   static const Color onSecondary = Color(0xFFFFFFFF);
   static const Color onSurface = Color(0xFFFFFFFF);
   static const Color onError = Color(0xFFFFFFFF);
+  static const Color accentText = Color(0xFF99EBFF);
 }
