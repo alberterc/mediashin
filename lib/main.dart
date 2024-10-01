@@ -4,6 +4,7 @@ import 'package:mediashin/collections/routes.dart';
 import 'package:system_theme/system_theme.dart';
 
 void main() async {
+  assert(Platform.isWindows);
   WidgetsFlutterBinding.ensureInitialized();
   _initWindow();
   runApp(const MediashinApp());

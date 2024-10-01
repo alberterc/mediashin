@@ -51,7 +51,7 @@ Widget _buildBody(BuildContext context) {
           spacer,
           SizedBox(
             width: 825,
-            // need to change into stateful so height can change when window is resized
+            // TODO: need to figure out how height can change when window is resized
             height: appWindow.size.height - appWindow.size.height * 46 / 100,
             child: GridView(
               shrinkWrap: true,
