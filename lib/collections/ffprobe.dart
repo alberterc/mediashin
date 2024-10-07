@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-// TODO: embed prebuilt ffprobe.exe into assets or windows build directory
 class Ffprobe {
   Future<String> run({
     required String filePath,
@@ -18,7 +17,8 @@ class Ffprobe {
       '-show_entries ${entries.join(':')}'
     ];
     final processDir = p.dirname(Platform.resolvedExecutable);
-    final exe = '${p.join(processDir, 'bin', 'ffprobe.exe')} ${args.join(' ')}';
+    final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
+    final exe = '${p.join(assetsPath, 'bin', 'ffprobe.exe')} ${args.join(' ')}';
 
     // print('[Run Process] $exe');
 

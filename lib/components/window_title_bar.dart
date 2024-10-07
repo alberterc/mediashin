@@ -1,6 +1,6 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:window_manager/window_manager.dart';
 
 class WindowTitleBar extends StatefulWidget {
   const WindowTitleBar({
@@ -10,97 +10,97 @@ class WindowTitleBar extends StatefulWidget {
   });
 
   final bool backButton;
-  final String? title;
+  final Widget? title;
 
   @override
   State<WindowTitleBar> createState() => _WindowTitleBarState();
 }
 
-class _WindowTitleBarState extends State<WindowTitleBar> {
-  void maximizeOrRestore() {
-    setState(() {
-      appWindow.maximizeOrRestore();
-    });
+class _WindowTitleBarState extends State<WindowTitleBar> with WindowListener {
+  @override
+  void onWindowMaximize() {
+    setState(() {});
+  }
+
+  @override
+  void onWindowUnmaximize() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var darkTheme = FluentTheme.of(context).brightness.isDark;
-    return WindowTitleBarBox(
+    var themeBrightness = FluentTheme.of(context).brightness;
+    return SizedBox(
+      height: 31,
       child: Row(
         children: [
           widget.backButton
-            ? BackButton(
-              colors: WindowButtonColors(
-                iconNormal: darkTheme ? Colors.white : Colors.black,
-                normal: Colors.transparent,
-                iconMouseOver: Colors.white,
-                mouseOver: Colors.red,
-                mouseDown: Colors.red.withOpacity(0.8)
-              ),
+            ? BackButtonTwo(
               onPressed: () => GoRouter.of(context).pop(),
             )
             : const SizedBox(),
           Expanded(
-            child: MoveWindow(
-              onDoubleTap: maximizeOrRestore,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.title ?? '',
-                    style: FluentTheme.of(context).typography.caption,
-                  ),
+            child: DragToMoveArea(
+              child: SizedBox(
+                height: double.infinity,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: DefaultTextStyle(
+                        style: FluentTheme.of(context).typography.caption!,
+                        child: widget.title ?? const SizedBox(),
+                      ),
+                    ),
+                  ],
                 ),
               )
             )
           ),
           Row(
             children: [
-              MinimizeWindowButton(
-                colors: WindowButtonColors(
-                  iconNormal: darkTheme ? Colors.white : Colors.black,
-                  normal: Colors.transparent,
-                  iconMouseOver: Colors.white,
-                  iconMouseDown: Colors.white,
-                  mouseOver: Colors.white.withOpacity(0.1),
-                  mouseDown: Colors.white.withOpacity(0.2),
-                ),
+              WindowCaptionButton.minimize(
+                brightness: themeBrightness,
+                onPressed: () async {
+                  bool isMinimized = await windowManager.isMinimized();
+                  if (isMinimized) {
+                    windowManager.restore();
+                  } else {
+                    windowManager.minimize();
+                  }
+                },
               ),
-              appWindow.isMaximized
-                ? RestoreWindowButton(
-                  colors: WindowButtonColors(
-                    iconNormal: darkTheme ? Colors.white : Colors.black,
-                    normal: Colors.transparent,
-                    iconMouseOver: Colors.white,
-                    iconMouseDown: Colors.white,
-                    mouseOver: Colors.white.withOpacity(0.1),
-                    mouseDown: Colors.white.withOpacity(0.2),
-                  ),
-                  onPressed: maximizeOrRestore,
-                )
-                : MaximizeWindowButton(
-                  colors: WindowButtonColors(
-                    iconNormal: darkTheme ? Colors.white : Colors.black,
-                    normal: Colors.transparent,
-                    iconMouseOver: Colors.white,
-                    iconMouseDown: Colors.white,
-                    mouseOver: Colors.white.withOpacity(0.1),
-                    mouseDown: Colors.white.withOpacity(0.2),
-                  ),
-                  onPressed: maximizeOrRestore
-                ),
-              CloseWindowButton(
-                colors: WindowButtonColors(
-                  iconNormal: darkTheme ? Colors.white : Colors.black,
-                  normal: Colors.transparent,
-                  iconMouseOver: Colors.white,
-                  iconMouseDown: Colors.black,
-                  mouseOver: Colors.red,
-                  mouseDown: Colors.red.withOpacity(0.8),
-                ),
+              FutureBuilder<bool>(
+                future: windowManager.isMaximized(),
+                builder: (context, snapshot) {
+                  if (snapshot.data == true) {
+                    return WindowCaptionButton.unmaximize(
+                      brightness: themeBrightness,
+                      onPressed: () => windowManager.unmaximize(),
+                    );
+                  }
+                  return WindowCaptionButton.maximize(
+                    brightness: themeBrightness,
+                    onPressed: () => windowManager.maximize(),
+                  );
+                },
               ),
+              WindowCaptionButton.close(
+                brightness: themeBrightness,
+                onPressed: () => windowManager.close(),
+              )
             ],
           )
         ],
@@ -109,19 +109,47 @@ class _WindowTitleBarState extends State<WindowTitleBar> {
   }
 }
 
-class BackButton extends WindowButton {
-  BackButton({
+class BackButtonTwo extends StatelessWidget {
+  const BackButtonTwo({
     super.key,
-    super.colors,
-    super.onPressed,
-    bool? animate
-  }) : super(
-    animate: animate ?? false,
-    iconBuilder: (buttonContext) => Icon(
-      FluentIcons.back,
-      color: buttonContext.iconColor,
-      size: 12.0,
-    ),
-    padding: EdgeInsets.zero
-  );
+    this.onPressed
+  });
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    var res = FluentTheme.of(context).resources;
+    return Center(
+      child: Button(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.isPressed) {
+              return const Color(0xffC42B1C).withOpacity(0.9);
+            }
+            else if (states.isHovered) {
+              return const Color(0xffC42B1C);
+            }
+            else if (states.isDisabled) {
+              return res.controlFillColorDisabled;
+            }
+            else {
+              return Colors.transparent;
+            }
+          }),
+          shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+          padding: const WidgetStatePropertyAll(EdgeInsets.all(0)),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 46, minHeight: 32),
+          child: const Icon(
+            FluentIcons.back,
+            color: Colors.white,
+            size: 12.0
+          )
+        )
+      ),
+    );
+  }
 }

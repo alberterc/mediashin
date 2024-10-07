@@ -1,58 +1,76 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
 import '../collections/pages.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with WindowListener {
+
+  @override
+  initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    SizedBox spacer = const SizedBox(height: 53);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const WindowTitleBar(),
-        _buildBody(context)
+        Text(
+          'Mediashin',
+          style: FluentTheme.of(context).typography.title
+        ),
+        // spacer,
+        // SizedBox(
+        //   width: 320,
+        //   child: AutoSuggestBox(
+        //     placeholder: 'Find a function',
+        //     trailingIcon: const Icon(FluentIcons.search),
+        //     items: pages.map((page) {
+        //       return AutoSuggestBoxItem (
+        //         label: page.name,
+        //         value: page.id,
+        //         onFocusChange: (focused) {
+        //           if (focused) {}
+        //         },
+        //       );
+        //     }).toList(),
+        //   ),
+        // ),
+        spacer,
+        Expanded(
+          child: SingleChildScrollView(
+            child: _buildBody(context),
+          ),
+        )
       ],
     );
   }
-}
 
-Widget _buildBody(BuildContext context) {
-  SizedBox spacer = const SizedBox(height: 53);
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 32.0),
-    child: Center(
+  Widget _buildBody(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 32.0),
       child: Column(
         children: [
-          Text(
-            'Mediashin',
-            style: FluentTheme.of(context).typography.title
-          ),
-          spacer,
-          SizedBox(
-            width: 320,
-            child: AutoSuggestBox(
-              placeholder: 'Find a function',
-              trailingIcon: const Icon(FluentIcons.search),
-              items: pages.map((page) {
-                return AutoSuggestBoxItem (
-                  label: page.name,
-                  value: page.id,
-                  onFocusChange: (focused) {
-                    if (focused) {}
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          spacer,
           SizedBox(
             width: 825,
-            // TODO: need to figure out how height can change when window is resized
-            height: appWindow.size.height - appWindow.size.height * 46 / 100,
             child: GridView(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -68,26 +86,28 @@ Widget _buildBody(BuildContext context) {
           )
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildCard(String title, String desc, BuildContext context) => Button(
-  style: const ButtonStyle(
-    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
-    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0)))),
-  ),
-  child: Align(
-    alignment: Alignment.centerLeft,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: FluentTheme.of(context).typography.bodyStrong, textAlign: TextAlign.left),
-        const SizedBox(height: 4.0),
-        Text(desc, style: FluentTheme.of(context).typography.body, textAlign: TextAlign.left)
-      ],
+  Widget _buildCard(String title, String desc, BuildContext context) {
+    return Button(
+    style: const ButtonStyle(
+      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
+      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0)))),
     ),
-  ),
-  onPressed: () => GoRouter.of(context).push('/${title.toLowerCase()}'),
-);
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: FluentTheme.of(context).typography.bodyStrong, textAlign: TextAlign.left),
+          const SizedBox(height: 4.0),
+          Text(desc, style: FluentTheme.of(context).typography.body, textAlign: TextAlign.left)
+        ],
+      ),
+    ),
+    onPressed: () => GoRouter.of(context).push('/${title.toLowerCase()}'),
+  );
+  }
+}

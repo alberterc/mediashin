@@ -1,30 +1,50 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:mediashin/collections/fix_window_stretch_at_launch.dart';
 import 'package:mediashin/collections/routes.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  assert(Platform.isWindows);
   WidgetsFlutterBinding.ensureInitialized();
+  assert(Platform.isWindows);
   _initWindow();
   runApp(const MediashinApp());
 }
 
-void _initWindow() => doWhenWindowReady(() async {
-  await SystemTheme.accentColor.load();
-  const initialSize = Size(960, 540);
-  appWindow
-    ..minSize = initialSize
-    ..size = initialSize
-    ..alignment = Alignment.center
-    ..show();
-});
 
-class MediashinApp extends StatelessWidget {
+void _initWindow() async{
+  const initSize = Size(960, 540);
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = const WindowOptions(
+    size: initSize,
+    minimumSize: initSize,
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+    windowButtonVisibility: false,
+    title: 'Mediashin'
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+}
+
+class MediashinApp extends StatefulWidget {
   const MediashinApp({super.key});
-  
+
+  @override
+  State<MediashinApp> createState() => _MediashinAppState();
+}
+
+class _MediashinAppState extends State<MediashinApp> {
   @override
   Widget build(BuildContext context) {
+    fixWindowStretchAtLaunch();
+
     return FluentApp.router(
       debugShowCheckedModeBanner: false, // remove after development
       routeInformationParser: router.routeInformationParser,
@@ -45,6 +65,7 @@ FluentThemeData _createTheme(Brightness brightness) => FluentThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   scaffoldBackgroundColor: Colors.transparent,
   fontFamily: 'NotoSans',
+  acrylicBackgroundColor: const Color(0xFF545454),
   typography: const Typography.raw(
     caption: TextStyle(
       fontVariations: [

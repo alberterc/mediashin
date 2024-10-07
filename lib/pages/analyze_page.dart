@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mediashin/collections/colors.dart';
 import 'package:mediashin/collections/ffprobe.dart';
 import 'package:mediashin/models/video_details.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
 
 VideoDetails videoDetails = VideoDetails();
-const _kSimpleDetailContainerWidth = 600.0;
+const _kSimpleDetailContainerWidth = 500.0;
 final ffprobe = Ffprobe();
 
 class AnalyzePage extends StatefulWidget {
@@ -20,30 +20,46 @@ class AnalyzePage extends StatefulWidget {
   State<AnalyzePage> createState() => _AnalyzePageState();
 }
 
-class _AnalyzePageState extends State<AnalyzePage> {
+class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   bool _isFilePicked = false;
 
   @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    SizedBox spacer = const SizedBox(height: 53);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const WindowTitleBar(
           backButton: true,
-          title: 'Mediashin',
+          title: Text('Mediashin'),
         ),
-        SizedBox(
-          // TODO: height and width needs to be adjusted everytime the window size changes
-          height: appWindow.size.height - appWindow.titleBarHeight - 15,
-          width: appWindow.size.width,
-          child: _buildBody(context)
+        Text(
+          'Analyze',
+          style: FluentTheme.of(context).typography.title
+        ),
+        spacer,
+        Expanded(
+          child: SingleChildScrollView(
+            child: _buildBody(context),
+          ),
         )
       ],
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    SizedBox spacer = const SizedBox(height: 53);
     Container divider = Container(
       height: 1,
       color: const Color(0xFF191927),
@@ -51,71 +67,64 @@ class _AnalyzePageState extends State<AnalyzePage> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 32.0),
-      child: Center(
-        child: Column(
-          children: [
-            Text(
-              'Analyze',
-              style: FluentTheme.of(context).typography.title
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            width: _kSimpleDetailContainerWidth,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(7.0)
             ),
-            spacer,
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              width: _kSimpleDetailContainerWidth,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(7.0)
-              ),
-              child: _isFilePicked
-                ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0, bottom: 12.0),
-                        child: SimpleDetails(),
-                      ),
-                      divider,
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                        child: _hyperlinkButton(
-                          text: 'More Details',
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () => Navigator.pop(context),
-                                  child: const MoreDetails(),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      _hyperlinkButton(
-                        text: 'Change File',
-                        onPressed: _loadVideoFile
-                      )
-                    ],
-                  )
-                : Column(
+            child: _isFilePicked
+              ? Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
-                      child: Text('No video file selected'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0, bottom: 12.0),
+                      child: SimpleDetails(),
                     ),
                     divider,
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                       child: _hyperlinkButton(
-                        text: 'Select File',
-                        onPressed: _loadVideoFile
+                        text: 'More Details',
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return GestureDetector(
+                                onTap: () => Navigator.pop(context),
+                                child: const MoreDetails(),
+                              );
+                            },
+                          );
+                        },
                       ),
+                    ),
+                    _hyperlinkButton(
+                      text: 'Change File',
+                      onPressed: _loadVideoFile
                     )
                   ],
                 )
-            )
-          ],
-        )
+              : Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
+                    child: Text('No video file selected'),
+                  ),
+                  divider,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                    child: _hyperlinkButton(
+                      text: 'Select File',
+                      onPressed: _loadVideoFile
+                    ),
+                  )
+                ],
+              )
+          )
+        ],
       ),
     );
   }
@@ -183,7 +192,7 @@ class SimpleDetails extends StatelessWidget {
       children: [
         TableRow(
           children: [
-            Text('Filename', style: FluentTheme.of(context).typography.bodyStrong, maxLines: 3, overflow: TextOverflow.ellipsis,),
+            Text('Filename', style: FluentTheme.of(context).typography.bodyStrong, maxLines: 2, overflow: TextOverflow.ellipsis,),
             Text(':', style: FluentTheme.of(context).typography.body,),
             Text(videoDetails.format!.filename!, style: FluentTheme.of(context).typography.body)
           ]
@@ -217,15 +226,15 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Resolution', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text('${videoDetails.streams![0].width!}x${videoDetails.streams![0].height!}', style: FluentTheme.of(context).typography.body)
+            Text('${videoDetails.streams![0].width!}x${videoDetails.streams![0].height!} px', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
         TableRow(
           children: [
-            Text('Bit Rate', style: FluentTheme.of(context).typography.bodyStrong),
+            Text('Total Bit Rate', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.bitRate!, style: FluentTheme.of(context).typography.body)
+            Text('${(int.parse(videoDetails.format!.bitRate!) / 1000).round()} kb/s', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -233,13 +242,13 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Size', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.size!, style: FluentTheme.of(context).typography.body)
+            Text('${(int.parse(videoDetails.format!.size!) / 1000000).round()} MB', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
         TableRow(
           children: [
-            Text('Streams', style: FluentTheme.of(context).typography.bodyStrong),
+            Text('Stream Count', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
             Text(videoDetails.format!.nbStreams!.toString(), style: FluentTheme.of(context).typography.body)
           ]
