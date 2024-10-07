@@ -9,9 +9,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
 
-VideoDetails videoDetails = VideoDetails();
-const _kSimpleDetailContainerWidth = 500.0;
-final ffprobe = Ffprobe();
+VideoDetails _videoDetails = VideoDetails();
 
 class AnalyzePage extends StatefulWidget {
   const AnalyzePage({super.key});
@@ -22,6 +20,7 @@ class AnalyzePage extends StatefulWidget {
 
 class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   bool _isFilePicked = false;
+  static const _kSimpleDetailContainerWidth = 500.0;
 
   @override
   void initState() {
@@ -147,6 +146,7 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   }
 
   Future _loadVideoFile() async {
+    final ffprobe = Ffprobe();
     FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
       type: FileType.video,
       allowMultiple: false,
@@ -166,7 +166,7 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
           'stream_tags=creation_time'
         ]
       );
-      videoDetails = VideoDetails.fromJson(jsonDecode(videoDetailsStr));
+      _videoDetails = VideoDetails.fromJson(jsonDecode(videoDetailsStr));
       setState(() {
         _isFilePicked = true;
       });
@@ -194,7 +194,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Filename', style: FluentTheme.of(context).typography.bodyStrong, maxLines: 2, overflow: TextOverflow.ellipsis,),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.filename!, style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.format!.filename!, style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -202,7 +202,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Duration', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.duration!, style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.format!.duration!, style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -210,7 +210,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Format', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.formatName!, style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.format!.formatName!, style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -218,7 +218,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Codec', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.streams![0].codecName!, style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.streams![0].codecName!, style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -226,7 +226,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Resolution', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text('${videoDetails.streams![0].width!}x${videoDetails.streams![0].height!} px', style: FluentTheme.of(context).typography.body)
+            Text('${_videoDetails.streams![0].width!}x${_videoDetails.streams![0].height!} px', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -234,7 +234,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Total Bit Rate', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text('${(int.parse(videoDetails.format!.bitRate!) / 1000).round()} kb/s', style: FluentTheme.of(context).typography.body)
+            Text('${(int.parse(_videoDetails.format!.bitRate!) / 1000).round()} kb/s', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -242,7 +242,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Size', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text('${(int.parse(videoDetails.format!.size!) / 1000000).round()} MB', style: FluentTheme.of(context).typography.body)
+            Text('${(int.parse(_videoDetails.format!.size!) / 1000000).round()} MB', style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -250,7 +250,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Stream Count', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.nbStreams!.toString(), style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.format!.nbStreams!.toString(), style: FluentTheme.of(context).typography.body)
           ]
         ),
         rowSpacer,
@@ -258,7 +258,7 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Created Time', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text(videoDetails.format!.tags!.creationTime != null ? videoDetails.format!.tags!.creationTime!.toString() : 'N/A', style: FluentTheme.of(context).typography.body)
+            Text(_videoDetails.format!.tags!.creationTime != null ? _videoDetails.format!.tags!.creationTime!.toString() : 'N/A', style: FluentTheme.of(context).typography.body)
           ]
         ),
       ]
