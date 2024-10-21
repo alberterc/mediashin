@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
-import '../collections/pages.dart';
+import '../collections/statics.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
