@@ -66,6 +66,22 @@ FluentThemeData _createTheme(Brightness brightness) => FluentThemeData(
   scaffoldBackgroundColor: Colors.transparent,
   fontFamily: 'NotoSans',
   acrylicBackgroundColor: const Color(0xFF545454),
+  buttonTheme: const ButtonThemeData(
+    hyperlinkButtonStyle: ButtonStyle(
+      textStyle: WidgetStatePropertyAll(
+        TextStyle(
+          fontVariations: [
+            FontVariation('wght', 400)
+          ],
+          fontSize: 14,
+          height: 20 / 14
+        )
+      ),
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.symmetric(vertical: 8.0)
+      )
+    )
+  ),
   typography: const Typography.raw(
     caption: TextStyle(
       fontVariations: [

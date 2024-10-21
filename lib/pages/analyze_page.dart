@@ -1,10 +1,12 @@
 import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mediashin/collections/colors.dart';
 import 'package:mediashin/collections/ffprobe.dart';
+import 'package:mediashin/collections/select_video_file.dart';
 import 'package:mediashin/models/video_details.dart';
+import 'package:mime/mime.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
@@ -20,6 +22,7 @@ class AnalyzePage extends StatefulWidget {
 
 class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   bool _isFilePicked = false;
+  bool _draggingFile = false;
   static const _kSimpleDetailContainerWidth = 500.0;
 
   @override
@@ -51,7 +54,24 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
         spacer,
         Expanded(
           child: SingleChildScrollView(
-            child: _buildBody(context),
+            child: DropTarget(
+              onDragDone: (details) {
+                if (details.files.length == 1) {
+                  _analyzeVideoFile(details.files.first.path);
+                }
+              },
+              onDragEntered: (_) {
+                setState(() {
+                  _draggingFile = true;
+                });
+              },
+              onDragExited: (_) {
+                setState(() {
+                  _draggingFile = false;
+                });
+              },
+              child: _buildBody(context)
+            ),
           ),
         )
       ],
@@ -66,64 +86,80 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 32.0),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            width: _kSimpleDetailContainerWidth,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(7.0)
-            ),
-            child: _isFilePicked
-              ? Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0, bottom: 12.0),
-                      child: SimpleDetails(),
-                    ),
-                    divider,
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      child: _hyperlinkButton(
-                        text: 'More Details',
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: const MoreDetails(),
-                              );
-                            },
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        width: _kSimpleDetailContainerWidth,
+        decoration: BoxDecoration(
+          color: _draggingFile ? Colors.white.withOpacity(0.15) : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(7.0)
+        ),
+        child: _isFilePicked
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 12.0),
+                  child: SimpleDetails(),
+                ),
+                divider,
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                  child: _hyperlinkButton(
+                    text: 'More Details',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const MoreDetails(),
                           );
                         },
-                      ),
-                    ),
-                    _hyperlinkButton(
-                      text: 'Change File',
-                      onPressed: _loadVideoFile
-                    )
-                  ],
-                )
-              : Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
-                    child: Text('No video file selected'),
+                      );
+                    },
                   ),
-                  divider,
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                    child: _hyperlinkButton(
-                      text: 'Select File',
-                      onPressed: _loadVideoFile
-                    ),
-                  )
-                ],
-              )
-          )
-        ],
+                ),
+                _hyperlinkButton(
+                  text: 'Change Video File',
+                  onPressed: () {
+                    selectVideoFile().then((file) {
+                      if (file != '') {
+                        _analyzeVideoFile(file);
+                      }
+                    });
+                  }
+                ),
+                Text(
+                  'or drop a video file here',
+                  style: FluentTheme.of(context).typography.caption!.copyWith(color: Colors.white.withOpacity(0.5)),
+                )
+              ],
+            )
+          : Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 4.0, bottom: 12.0),
+                  child: Text('No video file selected.'),
+                ),
+                divider,
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                  child: _hyperlinkButton(
+                    text: 'Select a Video File',
+                    onPressed: () {
+                      selectVideoFile().then((file) {
+                        if (file != '') {
+                          _analyzeVideoFile(file);
+                        }
+                      });
+                    }
+                  ),
+                ),
+                Text(
+                  'or drop a video file here',
+                  style: FluentTheme.of(context).typography.caption!.copyWith(color: Colors.white.withOpacity(0.5)),
+                )
+              ],
+            )
       ),
     );
   }
@@ -131,10 +167,6 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   Widget _hyperlinkButton({VoidCallback? onPressed, String? text}) {
     return HyperlinkButton(
       onPressed: onPressed ?? () {},
-      style: ButtonStyle(
-        textStyle: WidgetStatePropertyAll(FluentTheme.of(context).typography.body),
-        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8.0)),
-      ),
       child: SizedBox(
         width: _kSimpleDetailContainerWidth - 20,
         child: Text(
@@ -145,19 +177,12 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
     );
   }
 
-  Future _loadVideoFile() async {
-    final ffprobe = Ffprobe();
-    FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-      allowMultiple: false,
-      withData: false,
-      withReadStream: false
-    );
-
-    if (filePickerResult != null) {
+  void _analyzeVideoFile(String filePath) async {
+    if (lookupMimeType(filePath)!.startsWith('video/')) {
+      final ffprobe = Ffprobe();
       var videoDetailsStr = await ffprobe.run(
         printFormat: 'json',
-        filePath: filePickerResult.files.single.path!,
+        filePath: filePath,
         entries: [
           // TODO: nb_streams, duration, and bit_rate may not be needed
           'format=filename,nb_streams,format_name,format_long_name,duration,size,bit_rate',
@@ -226,7 +251,10 @@ class SimpleDetails extends StatelessWidget {
           children: [
             Text('Resolution', style: FluentTheme.of(context).typography.bodyStrong),
             Text(':', style: FluentTheme.of(context).typography.body,),
-            Text('${_videoDetails.streams![0].width!}x${_videoDetails.streams![0].height!} px', style: FluentTheme.of(context).typography.body)
+            Text(
+              _videoDetails.streams![0].width != null && _videoDetails.streams![0].height != null ? '${_videoDetails.streams![0].width!}x${_videoDetails.streams![0].height!} px' : 'N/A',
+              style: FluentTheme.of(context).typography.body
+            )
           ]
         ),
         rowSpacer,
