@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:mediashin/collections/colors.dart';
 import 'package:mediashin/collections/fix_window_stretch_at_launch.dart';
 import 'package:mediashin/collections/routes.dart';
 import 'package:system_theme/system_theme.dart';
@@ -61,11 +62,30 @@ class _MediashinAppState extends State<MediashinApp> {
 
 FluentThemeData _createTheme(Brightness brightness) => FluentThemeData(
   brightness: brightness,
-  accentColor: SystemTheme.accentColor.accent.toAccentColor(),
+  accentColor: AppColors.accentColor.toAccentColor(),
   visualDensity: VisualDensity.adaptivePlatformDensity,
   scaffoldBackgroundColor: Colors.transparent,
   fontFamily: 'NotoSans',
   acrylicBackgroundColor: const Color(0xFF545454),
+  menuColor: AppColors.primaryColor,
+  dialogTheme: ContentDialogThemeData(
+    titleStyle: const TextStyle(
+      fontVariations: [
+        FontVariation('wght', 600)
+      ],
+      fontSize: 20,
+      height: 28 / 20
+    ),
+    decoration: BoxDecoration(
+      color: AppColors.primaryColor,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: kElevationToShadow[6]
+    ),
+    actionsDecoration: const BoxDecoration(
+      color: AppColors.primaryColorDark,
+      borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))
+    ),
+  ),
   buttonTheme: const ButtonThemeData(
     hyperlinkButtonStyle: ButtonStyle(
       textStyle: WidgetStatePropertyAll(

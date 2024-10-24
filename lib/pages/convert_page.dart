@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:mediashin/collections/colors.dart';
 import 'package:mediashin/collections/ffmpeg.dart';
+import 'package:mediashin/collections/ffprobe.dart';
 import 'package:mediashin/collections/select_video_file.dart';
 import 'package:mediashin/collections/statics.dart';
 import 'package:mediashin/components/window_title_bar.dart';
@@ -23,6 +26,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
   static const _kSimpleDetailContainerWidth = 500.0;
 
   String _filePath = '';
+  String _inputFileName = '';
 
   bool _doLimitOutputSize = false;
   bool _doChangeVideoRate = false;
@@ -34,6 +38,8 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
   String _videoRateValue = '24';
   String _videoBitrateControl = 'crf';
   String _outputFileName = '';
+
+  BuildContext? convertingDialogContext;
 
   @override
   void initState() {
@@ -65,7 +71,15 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
         Expanded(
           child: SingleChildScrollView(
             child: DropTarget(
-              onDragDone: (_) {},
+              onDragDone: (details) {
+                if (details.files.length == 1) {
+                  setState(() {
+                    _filePath = details.files.first.path;
+                    _inputFileName = details.files.first.path.split('\\').removeLast();
+                    _isFilePicked = true;
+                  });
+                }
+              },
               onDragEntered: (_) {
                 setState(() {
                   _draggingFile = true;
@@ -106,6 +120,46 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: spacerInColumn(10, [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Input file:'),
+                      _isFilePicked
+                      ? SizedBox(
+                          width: 250,
+                          child: Tooltip(
+                            message: _filePath,
+                            style: const TooltipThemeData(
+                              waitDuration: Duration()
+                            ),
+                            child: Text(
+                              _inputFileName,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
+                      : Text('No file selected', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Output file name:'),
+                      SizedBox(
+                        width: 200,
+                        child: TextBox(
+                          onChanged: (value) {
+                            _outputFileName = value;
+                            _checkCanConvert();
+                          },
+                          placeholder: 'file name.mp4',
+                          expands: false,
+                          maxLines: 1,
+                        ),
+                      )
+                    ],
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -202,55 +256,59 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                     ],
                   ),
                   _videoBitrateControlContainer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Output file name:'),
-                      SizedBox(
-                        width: 200,
-                        child: TextBox(
-                          onChanged: (value) {
-                            _outputFileName = value;
-                            _checkCanConvert();
-                          },
-                          placeholder: 'file name.mp4',
-                          expands: false,
-                          maxLines: 1,
-                        ),
-                      )
-                    ],
-                  ),
                 ])
               ),
             ),
             divider,
-            _canConvert
+            _canConvert && _isFilePicked
+            ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                  child: _hyperlinkButton(
+                    text: 'Convert',
+                    onPressed: () {
+                      if (_filePath != '' && _outputFileName != '') {
+                        _convertVideoFile(_filePath);
+                      }
+                    }
+                  ),
+                ),
+                _hyperlinkButton(
+                  text: 'Change Video File',
+                  onPressed: () {
+                    selectVideoFile().then((file) {
+                      if (file != '') {
+                        setState(() {
+                          _filePath = file;
+                          _inputFileName = file.split('\\').removeLast();
+                          _isFilePicked = true;
+                        });
+                      }
+                      _checkCanConvert();
+                    });
+                  }
+                ),
+              ],
+            )
+            : !_canConvert && _isFilePicked
             ? Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
               child: _hyperlinkButton(
-                text: 'Convert',
+                text: 'Change Video File',
                 onPressed: () {
-                  if (_filePath != '' && _outputFileName != '') {
-                    _convertVideoFile(_filePath);
-                  }
+                  selectVideoFile().then((file) {
+                    if (file != '') {
+                      setState(() {
+                        _filePath = file;
+                        _inputFileName = file.split('\\').removeLast();
+                        _isFilePicked = true;
+                      });
+                    }
+                    _checkCanConvert();
+                  });
                 }
               ),
-            )
-            : const SizedBox.shrink(),
-            _isFilePicked
-            ? _hyperlinkButton(
-              text: 'Change Video File',
-              onPressed: () {
-                selectVideoFile().then((file) {
-                  if (file != '') {
-                    setState(() {
-                      _filePath = file;
-                      _isFilePicked = true;
-                    });
-                  }
-                  _checkCanConvert();
-                });
-              }
             )
             : Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
@@ -261,6 +319,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                     if (file != '') {
                       setState(() {
                         _filePath = file;
+                        _inputFileName = file.split('\\').removeLast();
                         _isFilePicked = true;
                       });
                     }
@@ -298,8 +357,67 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
       dir.removeLast();
       final outputFileNameFinal = '${dir.join('\\')}\\$_outputFileName';
 
+      double convertProgress = 0.0;
+      StateSetter progressSetstate = (fn) {};
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        dismissWithEsc: false,
+        builder: (dialogContext) {
+          convertingDialogContext = dialogContext;
+          return ContentDialog(
+            title:
+            StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Processing...'),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: 330,
+                      child: StatefulBuilder(
+                        builder: (context, setState) {
+                          progressSetstate = setState;
+                          return ProgressBar(
+                            value: convertProgress,
+                          );
+                        },
+                      )
+                    ),
+                  ],
+                );
+              },
+            ),
+            content: Text(
+              'Converting "$_inputFileName" to "$_outputFileName".',
+            ),
+            actions: [
+              HyperlinkButton(
+                child: const Padding(
+                  padding: kDefaultButtonPadding,
+                  child: Text('Cancel')
+                ),
+                onPressed: () {
+                  if (convertingDialogContext != null && convertingDialogContext!.mounted) {
+                    Navigator.pop(convertingDialogContext!);
+                  }
+                },
+              )
+            ],
+          );
+        }
+      );
+
+      // get total duration of video stream
+      final ffprobe = Ffprobe();
+      final totalDuration = await ffprobe.getTotalDuration(filePath: filePath);
+
+      // run convert
       final ffmpeg = Ffmpeg();
-      final res = await ffmpeg.run(
+      final res = await ffmpeg.convert(
         filePath: filePath,
         outputFileNameWithPath: outputFileNameFinal,
         vcodec: _videoCodec,
@@ -310,11 +428,28 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
         videoBitrateControl: _doChangeVideoRate ? _videoBitrateControl : null
       );
 
-      if (res.exitCode == 0) {
-        print('Conversion successful');
+      // get convert progress
+      await res.stdout
+        .transform(utf8.decoder)
+        .forEach(
+          (line) {
+            if (line.contains('out_time_ms')) {
+              final currentDuration = double.parse(line.split('\n')[6].split('=').removeLast());
+              progressSetstate(() {
+                convertProgress = (currentDuration / 1000000 / totalDuration) * 100;
+              });
+            }
+          });
+
+      // after convert is done
+      if (await res.exitCode == 0) {
+        res.kill();
       }
       else {
-        print('Conversion failed');
+        res.kill();
+      }
+      if (convertingDialogContext != null && convertingDialogContext!.mounted) {
+        Navigator.pop(convertingDialogContext!);
       }
     }
   }

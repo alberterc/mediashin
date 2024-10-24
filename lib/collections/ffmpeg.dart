@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 class Ffmpeg {
-  Future<ProcessResult> run({
+  Future<Process> convert({
     required String filePath,
     required String outputFileNameWithPath,
     String? vcodec,
@@ -19,6 +19,7 @@ class Ffmpeg {
       '-c:v $vcodec',
       '-c:a $acodec',
       '-preset $preset',
+      '-progress -'
     ];
     final processDir = p.dirname(Platform.resolvedExecutable);
     final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
@@ -43,10 +44,8 @@ class Ffmpeg {
     args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
 
     final exe = '${p.join(assetsPath, 'bin', 'ffmpeg.exe')} ${args.join(' ')}';
-    final res = await Process.run(exe, []);
+    final res = await Process.start(exe, []);
 
     return res;
-
-    // print(res.stdout.toString());
   }
 }
