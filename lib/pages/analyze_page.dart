@@ -25,6 +25,8 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
   bool _draggingFile = false;
   static const _kSimpleDetailContainerWidth = 500.0;
 
+  BuildContext? analyzeDialogContext;
+
   @override
   void initState() {
     super.initState();
@@ -179,10 +181,50 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
 
   void _analyzeVideoFile(String filePath) async {
     if (lookupMimeType(filePath)!.startsWith('video/')) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        dismissWithEsc: false,
+        builder: (dialogContext) {
+          analyzeDialogContext = dialogContext;
+          return ContentDialog(
+            title: const Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Processing...'),
+                SizedBox(height: 6),
+                SizedBox(
+                  width: 330,
+                  child: ProgressBar()
+                ),
+              ],
+            ),
+            content: Text(
+              'Analyzing "${filePath.split('\\').removeLast()}".',
+            ),
+            actions: [
+              HyperlinkButton(
+                child: const Padding(
+                  padding: kDefaultButtonPadding,
+                  child: Text('Cancel'),
+                ),
+                onPressed: () {
+                  if (analyzeDialogContext != null && analyzeDialogContext!.mounted) {
+                    Navigator.pop(analyzeDialogContext!);
+                  }
+                },
+              )
+            ],
+          );
+        }
+      );
+
       final ffprobe = Ffprobe();
       var videoDetailsStr = await ffprobe.run(
         printFormat: 'json',
         filePath: filePath,
+        useSexagesimal: true,
         entries: [
           // TODO: nb_streams, duration, and bit_rate may not be needed
           'format=filename,nb_streams,format_name,format_long_name,duration,size,bit_rate',
@@ -190,6 +232,12 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
           'stream=index,codec_name,codec_long_name,codec_type,codec_tag_string,width,height,color_range,display_aspect_ratio,r_frame_rate,bit_rate,sample_rate,channels,duration',
           'stream_tags=creation_time'
         ]
+      ).whenComplete(
+        () {
+          if (analyzeDialogContext != null && analyzeDialogContext!.mounted) {
+            Navigator.pop(analyzeDialogContext!);
+          }
+        }
       );
       _videoDetails = VideoDetails.fromJson(jsonDecode(videoDetailsStr));
       setState(() {
