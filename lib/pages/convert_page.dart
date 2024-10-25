@@ -367,29 +367,24 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
         builder: (dialogContext) {
           convertingDialogContext = dialogContext;
           return ContentDialog(
-            title:
-            StatefulBuilder(
-              builder: (context, setState) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Processing...'),
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      width: 330,
-                      child: StatefulBuilder(
-                        builder: (context, setState) {
-                          progressSetstate = setState;
-                          return ProgressBar(
-                            value: convertProgress,
-                          );
-                        },
-                      )
-                    ),
-                  ],
-                );
-              },
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Processing...'),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: 330,
+                  child: StatefulBuilder(
+                    builder: (context, setState) {
+                      progressSetstate = setState;
+                      return ProgressBar(
+                        value: convertProgress,
+                      );
+                    },
+                  )
+                ),
+              ],
             ),
             content: Text(
               'Converting "$_inputFileName" to "$_outputFileName".',
@@ -442,15 +437,92 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
           });
 
       // after convert is done
-      if (await res.exitCode == 0) {
-        res.kill();
-      }
-      else {
-        res.kill();
-      }
       if (convertingDialogContext != null && convertingDialogContext!.mounted) {
         Navigator.pop(convertingDialogContext!);
       }
+      if (await res.exitCode == 0) {
+        showDialog(
+          context: context.mounted ? context : context,
+          barrierDismissible: false,
+          dismissWithEsc: false,
+          builder: (dialogContext) {
+            return ContentDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text('Successful'),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle
+                    ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Icon(
+                      FluentIcons.check_mark,
+                      size: 12,
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                'Successfully converted "$_inputFileName" to "$_outputFileName".',
+              ),
+              actions: [
+                HyperlinkButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Padding(
+                    padding: kDefaultButtonPadding,
+                    child: Text('OK')
+                  )
+                )
+              ]
+            );
+          }
+        );
+      }
+      else {
+        showDialog(
+          context: context.mounted ? context : context,
+          barrierDismissible: false,
+          dismissWithEsc: false,
+          builder: (dialogContext) {
+            return ContentDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text('Failed'),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle
+                    ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Icon(
+                      FluentIcons.chrome_close,
+                      size: 12,
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                'Failed to convert "$_inputFileName" to "$_outputFileName".',
+              ),
+              actions: [
+                HyperlinkButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Padding(
+                    padding: kDefaultButtonPadding,
+                    child: Text('OK')
+                  )
+                )
+              ]
+            );
+          }
+        );
+      }
+      res.kill();
     }
   }
 
