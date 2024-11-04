@@ -136,6 +136,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                               _inputFileName,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right
                             ),
                           ),
                         )
