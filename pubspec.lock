@@ -57,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.4+2"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
   desktop_drop:
     dependency: "direct main"
     description:
@@ -338,22 +330,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0+3"
-  system_theme:
-    dependency: "direct main"
-    description:
-      name: system_theme
-      sha256: "676f8e5bdbf17d5b1267592370810df8cdfaa01d3a2e121b22bd4ea30e63f17c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
-  system_theme_web:
-    dependency: transitive
-    description:
-      name: system_theme_web
-      sha256: "900c92c5c050ce58048f241ef9a17e5cd8629808325a05b473dc62a6e99bae77"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
   term_glyph:
     dependency: transitive
     description:
