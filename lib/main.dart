@@ -4,7 +4,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mediashin/collections/colors.dart';
 import 'package:mediashin/collections/fix_window_stretch_at_launch.dart';
 import 'package:mediashin/collections/routes.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -52,7 +51,7 @@ class _MediashinAppState extends State<MediashinApp> {
       routeInformationProvider: router.routeInformationProvider,
       routerDelegate: router.routerDelegate,
       title: 'Mediashin',
-      color: SystemTheme.accentColor.accent.toAccentColor(),
+      color: AppColors.accentColor.toAccentColor(),
       locale: const Locale('en', 'US'),
       darkTheme: _createTheme(Brightness.dark),
       theme: _createTheme(Brightness.light),
