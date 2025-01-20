@@ -48,4 +48,25 @@ class Ffmpeg {
 
     return res;
   }
+
+  Future<Process> extractAudio({
+    required String filePath,
+    required String outputFileNameWithPath
+  }) async {
+    List<String> args = [
+      '-loglevel error',
+      '-i "$filePath"',
+      '-c copy',
+      '-progress -'
+    ];
+    final processDir = p.dirname(Platform.resolvedExecutable);
+    final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
+
+    args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
+
+    final exe = '${p.join(assetsPath, 'bin', 'ffmpeg.exe')} ${args.join(' ')}';
+    final res = await Process.start(exe, []);
+
+    return res;
+  }
 }
