@@ -34,6 +34,3 @@ Inspired by my laziness on using CLI for FFmpeg or FFprobe everytime I need to c
 1. [desktop_drop](https://pub.dev/packages/desktop_drop) - A plugin which allows user dragging files to your flutter desktop applications.
 1. [mime](https://pub.dev/packages/mime) - Package for working with MIME type definitions and for processing streams of MIME multipart media types.
 </details>
-
-### License
-License will be added soon. Until then, this project is not licensed for distribution or modification.
