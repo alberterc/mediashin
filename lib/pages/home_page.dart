@@ -1,5 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mediashin/collections/ffmpeg.dart';
+import 'package:mediashin/collections/ffprobe.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../components/window_title_bar.dart';
@@ -24,6 +27,15 @@ class _HomePageState extends State<HomePage> with WindowListener {
   void dispose() {
     windowManager.removeListener(this);
     super.dispose();
+  }
+
+  Future<Map<String, bool>> _checkDependencies() async {
+    final ffmpeg = await Ffmpeg().isInstalled();
+    final ffprobe = await Ffprobe().isInstalled();
+    return {
+      'ffmpeg': ffmpeg,
+      'ffprobe': ffprobe
+    };
   }
 
   @override
@@ -55,11 +67,95 @@ class _HomePageState extends State<HomePage> with WindowListener {
         //   ),
         // ),
         spacer,
-        Expanded(
-          child: SingleChildScrollView(
-            child: _buildBody(context),
-          ),
-        )
+        FutureBuilder(
+          future: _checkDependencies(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const ProgressRing();
+            }
+            else {
+              final ffmpeg = snapshot.data?['ffmpeg'] ?? false;
+              final ffprobe = snapshot.data?['ffprobe'] ?? false;
+              if (ffmpeg && ffprobe) {
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildBody(context),
+                  ),
+                );
+              }
+              else if (!ffmpeg && !ffprobe) {
+                return Column(
+                  children: [
+                    Text(
+                      'Ffprobe and Ffmpeg are not found/installed.',
+                      style: FluentTheme.of(context).typography.bodyStrong,
+                    ),
+                    const SizedBox(height: 24.0),
+                    Button(
+                      child: const Text('Click here to download from https://ffmpeg.org/download.html'),
+                      onPressed: () => launchUrl(
+                        Uri.parse('https://ffmpeg.org/download.html'),
+                        mode: LaunchMode.externalApplication
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      'then put them in your system\'s PATH environment and restart Mediashin.',
+                      style: FluentTheme.of(context).typography.body,
+                    ),
+                  ],
+                );
+              }
+              if (!ffprobe) {
+                return Column(
+                  children: [
+                    Text(
+                      'Ffprobe is not found/installed.',
+                      style: FluentTheme.of(context).typography.bodyStrong,
+                    ),
+                    const SizedBox(height: 24.0),
+                    Button(
+                      child: const Text('Click here to download from https://ffmpeg.org/download.html'),
+                      onPressed: () => launchUrl(
+                        Uri.parse('https://ffmpeg.org/download.html'),
+                        mode: LaunchMode.externalApplication
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      'then put it in your system\'s PATH environment and restart Mediashin.',
+                      style: FluentTheme.of(context).typography.body,
+                    ),
+                  ],
+                );
+              }
+              else if (!ffmpeg) {
+                return Column(
+                  children: [
+                    Text(
+                      'Ffmpeg is not found/installed.',
+                      style: FluentTheme.of(context).typography.bodyStrong,
+                    ),
+                    const SizedBox(height: 24.0),
+                    Button(
+                      child: const Text('Click here to download from https://ffmpeg.org/download.html'),
+                      onPressed: () => launchUrl(
+                        Uri.parse('https://ffmpeg.org/download.html'),
+                        mode: LaunchMode.externalApplication
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      'then put it in your system\'s PATH environment and restart Mediashin.',
+                      style: FluentTheme.of(context).typography.body,
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            }
+          }
+        ),
       ],
     );
   }

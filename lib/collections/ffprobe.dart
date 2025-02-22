@@ -3,6 +3,24 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 class Ffprobe {
+  Future<bool> isInstalled() async {
+    final res = await Process.run('ffprobe', ['-version']);
+    if (res.exitCode == 0 && res.stdout.toString().contains('ffprobe')) {
+      return true;
+    }
+
+    final pathEnv = Platform.environment['PATH'];
+    if (pathEnv != null) {
+      for (String path in pathEnv.split(';')) {
+        if (File(p.join(path, 'ffprobe.exe')).existsSync()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   Future<double> getTotalDuration({
     required String filePath
   }) async {
@@ -40,9 +58,7 @@ class Ffprobe {
       args.add('-sexagesimal');
     }
 
-    final processDir = p.dirname(Platform.resolvedExecutable);
-    final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
-    final exe = '${p.join(assetsPath, 'bin', 'ffprobe.exe')} ${args.join(' ')}';
+    final exe = 'ffprobe ${args.join(' ')}';
 
     final res = await Process.run(exe, []);
     return res.stdout.toString();

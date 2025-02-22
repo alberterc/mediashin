@@ -3,6 +3,24 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 class Ffmpeg {
+  Future<bool> isInstalled() async {
+    final res = await Process.run('ffmpeg', ['-version']);
+    if (res.exitCode == 0 && res.stdout.toString().contains('ffmpeg')) {
+      return true;
+    }
+
+    final pathEnv = Platform.environment['PATH'];
+    if (pathEnv != null) {
+      for (String path in pathEnv.split(';')) {
+        if (File(p.join(path, 'ffmpeg.exe')).existsSync()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   Future<Process> convert({
     required String filePath,
     required String outputFileNameWithPath,
@@ -21,8 +39,6 @@ class Ffmpeg {
       '-preset $preset',
       '-progress -'
     ];
-    final processDir = p.dirname(Platform.resolvedExecutable);
-    final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
 
     if (sizeLimit != null) {
       args.add('-fs $sizeLimit');
@@ -43,7 +59,7 @@ class Ffmpeg {
     }
     args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
 
-    final exe = '${p.join(assetsPath, 'bin', 'ffmpeg.exe')} ${args.join(' ')}';
+    final exe = 'ffmpeg ${args.join(' ')}';
     final res = await Process.start(exe, []);
 
     return res;
@@ -59,12 +75,10 @@ class Ffmpeg {
       '-c copy',
       '-progress -'
     ];
-    final processDir = p.dirname(Platform.resolvedExecutable);
-    final assetsPath = p.join(processDir, 'data\\flutter_assets\\assets');
 
     args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
 
-    final exe = '${p.join(assetsPath, 'bin', 'ffmpeg.exe')} ${args.join(' ')}';
+    final exe = 'ffmpeg ${args.join(' ')}';
     final res = await Process.start(exe, []);
 
     return res;
