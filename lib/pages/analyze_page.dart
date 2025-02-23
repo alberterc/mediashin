@@ -103,32 +103,38 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
                   child: SimpleDetails(),
                 ),
                 divider,
+
+                // Huh... is this feature needed or worth to implement?
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                //   child: _hyperlinkButton(
+                //     text: 'More Details',
+                //     onPressed: () {
+                //       showDialog(
+                //         context: context,
+                //         builder: (context) {
+                //           return GestureDetector(
+                //             onTap: () => Navigator.pop(context),
+                //             child: const MoreDetails(),
+                //           );
+                //         },
+                //       );
+                //     },
+                //   ),
+                // ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                   child: _hyperlinkButton(
-                    text: 'More Details',
+                    text: 'Change Video File',
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const MoreDetails(),
-                          );
-                        },
-                      );
-                    },
+                      selectVideoFile().then((file) {
+                        if (file != '') {
+                          _analyzeVideoFile(file);
+                        }
+                      });
+                    }
                   ),
-                ),
-                _hyperlinkButton(
-                  text: 'Change Video File',
-                  onPressed: () {
-                    selectVideoFile().then((file) {
-                      if (file != '') {
-                        _analyzeVideoFile(file);
-                      }
-                    });
-                  }
                 ),
                 Text(
                   'or drop a video file here',
@@ -342,26 +348,28 @@ class SimpleDetails extends StatelessWidget {
   }
 }
 
-class MoreDetails extends StatelessWidget {
-  const MoreDetails({super.key});
+// Huh... is this feature needed or worth to implement?
+//
+// class MoreDetails extends StatelessWidget {
+//   const MoreDetails({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return ContentDialog(
-      content: Acrylic(
-        luminosityAlpha: 0.8,
-        blurAmount: 35,
-        tintAlpha: 0,
-        elevation: 0.5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Test'),
-        )
-      ),
-      style: const ContentDialogThemeData(
-        decoration: BoxDecoration()
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ContentDialog(
+//       content: Acrylic(
+//         luminosityAlpha: 0.8,
+//         blurAmount: 35,
+//         tintAlpha: 0,
+//         elevation: 0.5,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
+//         child: const Padding(
+//           padding: EdgeInsets.all(16.0),
+//           child: Text('Test'),
+//         )
+//       ),
+//       style: const ContentDialogThemeData(
+//         decoration: BoxDecoration()
+//       ),
+//     );
+//   }
+// }
