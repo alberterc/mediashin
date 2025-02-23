@@ -1,10 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mediashin/components/mediashin_route_page.dart';
+import 'package:mediashin/pages/about_page.dart';
 import 'package:mediashin/pages/analyze_page.dart';
 import 'package:mediashin/pages/convert_page.dart';
 import 'package:mediashin/pages/extract_page.dart';
 import 'package:mediashin/pages/home_page.dart';
+import 'package:mediashin/pages/license_page.dart';
 
 final rootNavigationkey = GlobalKey<NavigatorState>();
 final router = GoRouter(
@@ -16,6 +18,22 @@ final router = GoRouter(
       pageBuilder: (context, state) => MediashinRoutePage(
         key: state.pageKey,
         child: const HomePage()
+      ),
+    ),
+    GoRoute(
+      path: '/about',
+      parentNavigatorKey: rootNavigationkey,
+      pageBuilder: (context, state) => MediashinRoutePage(
+        key: state.pageKey,
+        child: const AboutPage()
+      ),
+    ),
+    GoRoute(
+      path: '/licenses',
+      parentNavigatorKey: rootNavigationkey,
+      pageBuilder: (context, state) => MediashinRoutePage(
+        key: state.pageKey,
+        child: const LicensePage()
       ),
     ),
     GoRoute(
