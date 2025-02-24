@@ -430,10 +430,12 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
         .forEach(
           (line) {
             if (line.contains('out_time_ms')) {
-              final currentDuration = double.parse(line.split('\n')[6].split('=').removeLast());
-              progressSetstate(() {
-                convertProgress = (currentDuration / 1000000 / totalDuration) * 100;
-              });
+              try {
+                final currentDuration = double.parse(line.split('\n')[6].split('=').removeLast());
+                progressSetstate(() {
+                  convertProgress = (currentDuration / 1000000 / totalDuration) * 100;
+                });
+              } catch (_) {}
             }
           });
 
