@@ -1,12 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/collections/ffmpeg.dart';
-import 'package:mediashin/collections/ffprobe.dart';
+import 'package:mediashin/services/ffmpeg.dart';
+import 'package:mediashin/services/ffprobe.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../components/window_title_bar.dart';
-import '../collections/statics.dart';
+import '../../widgets/window_title_bar.dart';
+import '../../models/collections/statics.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

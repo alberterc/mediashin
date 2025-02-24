@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/collections/colors.dart';
+import 'package:mediashin/models/collections/colors.dart';
 
 class MediashinRoutePage extends CustomTransitionPage {
   MediashinRoutePage({

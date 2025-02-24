@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/components/hyperlink.dart';
-import 'package:mediashin/components/window_title_bar.dart';
+import 'package:mediashin/widgets/hyperlink.dart';
+import 'package:mediashin/widgets/window_title_bar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutPage extends StatefulWidget {
