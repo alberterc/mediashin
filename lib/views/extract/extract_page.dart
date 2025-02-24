@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mediashin/models/collections/colors.dart';
-import 'package:mediashin/services/ffmpeg.dart';
-import 'package:mediashin/services/ffprobe.dart';
+import 'package:mediashin/services/ffmpeg_service.dart';
+import 'package:mediashin/services/ffprobe_service.dart';
 import 'package:mediashin/utils/select_video_file.dart';
 import 'package:mediashin/models/collections/statics.dart';
 import 'package:mediashin/widgets/window_title_bar.dart';
@@ -316,7 +316,7 @@ class _ExtractPageState extends State<ExtractPage> with WindowListener {
   Future<List<String>> _getAudioCodecsFromVideoFile(String filePath) async {
     if (lookupMimeType(filePath)!.startsWith('video/')) {
       // get audio codec
-      final ffprobe = Ffprobe();
+      final ffprobe = FfprobeService();
       var videoDetailsStr = await ffprobe.run(
           printFormat: 'json',
           filePath: filePath,
@@ -392,11 +392,11 @@ class _ExtractPageState extends State<ExtractPage> with WindowListener {
           });
 
       // get total duration of video stream
-      final ffprobe = Ffprobe();
+      final ffprobe = FfprobeService();
       final totalDuration = await ffprobe.getTotalDuration(filePath: filePath);
 
       // extract audio based on the found codec
-      final ffmpeg = Ffmpeg();
+      final ffmpeg = FfmpegService();
       final res = await ffmpeg.extractAudio(
         filePath: filePath,
         outputFileNameWithPath: outputFileNameFinal,

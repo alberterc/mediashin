@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/services/ffmpeg.dart';
-import 'package:mediashin/services/ffprobe.dart';
+import 'package:mediashin/services/ffmpeg_service.dart';
+import 'package:mediashin/services/ffprobe_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -30,8 +30,8 @@ class _HomePageState extends State<HomePage> with WindowListener {
   }
 
   Future<Map<String, bool>> _checkDependencies() async {
-    final ffmpeg = await Ffmpeg().isInstalled();
-    final ffprobe = await Ffprobe().isInstalled();
+    final ffmpeg = await FfmpegService.isInstalled();
+    final ffprobe = await FfprobeService.isInstalled();
     return {
       'ffmpeg': ffmpeg,
       'ffprobe': ffprobe
