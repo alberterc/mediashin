@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-class Ffmpeg {
-  Future<bool> isInstalled() async {
+class FfmpegService {
+  static Future<bool> isInstalled() async {
     final res = await Process.run('ffmpeg', ['-version']);
     if (res.exitCode == 0 && res.stdout.toString().contains('ffmpeg')) {
       return true;

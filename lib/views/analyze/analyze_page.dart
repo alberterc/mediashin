@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mediashin/models/collections/colors.dart';
-import 'package:mediashin/services/ffprobe.dart';
+import 'package:mediashin/services/ffprobe_service.dart';
 import 'package:mediashin/utils/select_video_file.dart';
 import 'package:mediashin/models/video_details.dart';
 import 'package:mime/mime.dart';
@@ -226,7 +226,7 @@ class _AnalyzePageState extends State<AnalyzePage> with WindowListener {
         }
       );
 
-      final ffprobe = Ffprobe();
+      final ffprobe = FfprobeService();
       var videoDetailsStr = await ffprobe.run(
         printFormat: 'json',
         filePath: filePath,

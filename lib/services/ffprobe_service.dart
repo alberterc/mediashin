@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-class Ffprobe {
-  Future<bool> isInstalled() async {
+class FfprobeService {
+  static Future<bool> isInstalled() async {
     final res = await Process.run('ffprobe', ['-version']);
     if (res.exitCode == 0 && res.stdout.toString().contains('ffprobe')) {
       return true;
@@ -24,7 +24,7 @@ class Ffprobe {
   Future<double> getTotalDuration({
     required String filePath
   }) async {
-    final ffprobe = Ffprobe();
+    final ffprobe = FfprobeService();
     final res = await ffprobe.run(
       filePath: filePath,
       printFormat: 'compact',
