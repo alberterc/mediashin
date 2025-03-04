@@ -28,7 +28,7 @@ final List<String> videoCodec = [
   'hevc',
   'hevc_nvenc',
   'h264_nvenc',
-  'mpeg4'
+  'mpeg4',
   'vp8',
   'vp9',
 ];
