@@ -1,12 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/components/mediashin_route_page.dart';
-import 'package:mediashin/pages/about_page.dart';
-import 'package:mediashin/pages/analyze_page.dart';
-import 'package:mediashin/pages/convert_page.dart';
-import 'package:mediashin/pages/extract_page.dart';
-import 'package:mediashin/pages/home_page.dart';
-import 'package:mediashin/pages/license_page.dart';
+import 'package:mediashin/routes/mediashin_route_page.dart';
+import 'package:mediashin/views/about/about_page.dart';
+import 'package:mediashin/views/analyze/analyze_page.dart';
+import 'package:mediashin/views/convert/convert_page.dart';
+import 'package:mediashin/views/extract/extract_page.dart';
+import 'package:mediashin/views/home/home_page.dart';
+import 'package:mediashin/views/about/license/license_page.dart';
 
 final rootNavigationkey = GlobalKey<NavigatorState>();
 final router = GoRouter(

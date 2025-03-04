@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mediashin/components/pane_item_body.dart';
-import 'package:mediashin/components/window_title_bar.dart';
+import 'package:mediashin/widgets/pane_item_body.dart';
+import 'package:mediashin/widgets/window_title_bar.dart';
 
 class LicensePage extends StatefulWidget {
   const LicensePage({super.key});

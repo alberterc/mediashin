@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:mediashin/collections/colors.dart';
-import 'package:mediashin/collections/ffmpeg.dart';
-import 'package:mediashin/collections/ffprobe.dart';
-import 'package:mediashin/collections/select_video_file.dart';
-import 'package:mediashin/collections/statics.dart';
-import 'package:mediashin/components/window_title_bar.dart';
+import 'package:mediashin/models/collections/colors.dart';
+import 'package:mediashin/services/ffmpeg.dart';
+import 'package:mediashin/services/ffprobe.dart';
+import 'package:mediashin/utils/select_video_file.dart';
+import 'package:mediashin/models/collections/statics.dart';
+import 'package:mediashin/widgets/window_title_bar.dart';
 import 'package:mediashin/models/video_details.dart';
 import 'package:mime/mime.dart';
 import 'package:window_manager/window_manager.dart';

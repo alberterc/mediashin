@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:mediashin/collections/colors.dart';
-import 'package:mediashin/collections/fix_window_stretch_at_launch.dart';
-import 'package:mediashin/collections/routes.dart';
+import 'package:mediashin/models/collections/colors.dart';
+import 'package:mediashin/utils/fix_window_stretch_at_launch.dart';
+import 'package:mediashin/routes/routes.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
