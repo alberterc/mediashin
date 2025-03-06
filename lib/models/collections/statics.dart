@@ -33,6 +33,11 @@ final List<String> videoCodec = [
   'vp9',
 ];
 
+final List<String> videoFormat = [
+  'mp4',
+  'mkv'
+];
+
 final List<String> audioCodec = [
   'copy',
   'aac',

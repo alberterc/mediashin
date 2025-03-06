@@ -29,16 +29,30 @@ class FfmpegService {
     String? preset,
     String? sizeLimit,
     String? videoRateValue,
-    String? videoBitrateControl
+    String? videoBitrateControl,
+    required bool addThumbnail
   }) async {
+    List<String> thumbnailArgs = [
+      '-filter_complex "[0:v]thumbnail,trim=end_frame=1,scale=320:-1[thumb]"',
+      '-map "[thumb]"',
+      '-disposition:v:1 attached_pic',
+      '-c:v:1 mjpeg'
+    ];
+
     List<String> args = [
       '-loglevel error',
       '-i "$filePath"',
-      '-c:v $vcodec',
+      '-map_metadata 0',
+      '-map 0',
+      '-c:v:0 $vcodec',
       '-c:a $acodec',
       '-preset $preset',
       '-progress -'
     ];
+
+    if (addThumbnail) {
+      args.insertAll(4, thumbnailArgs);
+    }
 
     if (sizeLimit != null) {
       args.add('-fs $sizeLimit');

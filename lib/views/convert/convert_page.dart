@@ -30,9 +30,11 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
 
   bool _doLimitOutputSize = false;
   bool _doChangeVideoRate = false;
+  bool _addThumbnail = false;
   String _fileSizeLimitUnit = 'KB';
   String _fileSizeLimit = '';
   String _videoCodec = 'copy';
+  String _videoFormat = 'mp4';
   String _audioCodec = 'copy';
   String _encodePreset = 'medium';
   String _videoRateValue = '24';
@@ -154,12 +156,32 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                             _outputFileName = value;
                             _checkCanConvert();
                           },
-                          placeholder: 'file name.mp4',
+                          placeholder: 'file name (without file type)',
                           expands: false,
                           maxLines: 1,
                         ),
                       )
                     ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Output file format:'),
+                      ComboBox(
+                        value: _videoFormat,
+                        onChanged: (val) {
+                          setState(() {
+                            _videoFormat = val!;
+                          });
+                        },
+                        items: videoFormat.map((val) {
+                          return ComboBoxItem(
+                            value: val,
+                            child: Text(val),
+                          );
+                        }).toList(),
+                      )
+                    ]
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,6 +249,21 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                       )
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Create thumbnail metadata?'),
+                      ToggleSwitch(
+                        checked: _addThumbnail,
+                        onChanged: (val) {
+                          setState(() {
+                            _addThumbnail = val;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2.0,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -356,7 +393,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
     if (lookupMimeType(filePath)!.startsWith('video/')) {
       final dir = filePath.split('\\');
       dir.removeLast();
-      final outputFileNameFinal = '${dir.join('\\')}\\$_outputFileName';
+      final outputFileNameFinal = '${dir.join('\\')}\\$_outputFileName.$_videoFormat';
 
       double convertProgress = 0.0;
       StateSetter progressSetstate = (fn) {};
@@ -388,7 +425,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
               ],
             ),
             content: Text(
-              'Converting "$_inputFileName" to "$_outputFileName".',
+              'Converting "$_inputFileName" to "$_outputFileName.$_videoFormat".',
             ),
             actions: [
               HyperlinkButton(
@@ -421,7 +458,8 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
         preset: _encodePreset,
         sizeLimit: _doLimitOutputSize && _fileSizeLimit != '' ? _fileSizeLimit : null,
         videoRateValue: _doChangeVideoRate && _videoRateValue != '' ? _videoRateValue : null,
-        videoBitrateControl: _doChangeVideoRate ? _videoBitrateControl : null
+        videoBitrateControl: _doChangeVideoRate ? _videoBitrateControl : null,
+        addThumbnail: _addThumbnail
       );
 
       // get convert progress
@@ -469,7 +507,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                 ],
               ),
               content: Text(
-                'Successfully converted "$_inputFileName" to "$_outputFileName".',
+                'Successfully converted "$_inputFileName" to "$_outputFileName.$_videoFormat".',
               ),
               actions: [
                 HyperlinkButton(
@@ -510,7 +548,7 @@ class _ConvertPageState extends State<ConvertPage> with WindowListener {
                 ],
               ),
               content: Text(
-                'Failed to convert "$_inputFileName" to "$_outputFileName".',
+                'Failed to convert "$_inputFileName" to "$_outputFileName.$_videoFormat".',
               ),
               actions: [
                 HyperlinkButton(
