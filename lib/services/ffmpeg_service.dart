@@ -21,17 +21,16 @@ class FfmpegService {
     return false;
   }
 
-  Future<Process> convert({
-    required String filePath,
-    required String outputFileNameWithPath,
-    String? vcodec,
-    String? acodec,
-    String? preset,
-    String? sizeLimit,
-    String? videoRateValue,
-    String? videoBitrateControl,
-    required bool addThumbnail
-  }) async {
+  Future<Process> convert(
+      {required String filePath,
+      required String outputFileNameWithPath,
+      String? vcodec,
+      String? acodec,
+      String? preset,
+      String? sizeLimit,
+      String? videoRateValue,
+      String? videoBitrateControl,
+      required bool addThumbnail}) async {
     List<String> thumbnailArgs = [
       '-filter_complex "[0:v]thumbnail,trim=end_frame=1,scale=320:-1[thumb]"',
       '-map "[thumb]"',
@@ -60,18 +59,15 @@ class FfmpegService {
 
     if (vcodec != null && vcodec.contains('nvenc')) {
       if (videoBitrateControl != 'crf' && videoRateValue != null) {
-        args.addAll([
-          '-cq:v $videoRateValue',
-          '-rc:v $videoBitrateControl'
-        ]);
+        args.addAll(['-cq:v $videoRateValue', '-rc:v $videoBitrateControl']);
       }
-    }
-    else {
+    } else {
       if (videoBitrateControl == 'crf' && videoRateValue != null) {
         args.add('-crf $videoRateValue');
       }
     }
-    args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
+    args.add(
+        '"$outputFileNameWithPath"'); // outputFilePath must be the last arg
 
     final exe = 'ffmpeg ${args.join(' ')}';
     final res = await Process.start(exe, []);
@@ -79,10 +75,9 @@ class FfmpegService {
     return res;
   }
 
-  Future<Process> extractAudio({
-    required String filePath,
-    required String outputFileNameWithPath
-  }) async {
+  Future<Process> extractAudio(
+      {required String filePath,
+      required String outputFileNameWithPath}) async {
     List<String> args = [
       '-loglevel error',
       '-i "$filePath"',
@@ -90,7 +85,8 @@ class FfmpegService {
       '-progress -'
     ];
 
-    args.add('"$outputFileNameWithPath"'); // outputFilePath must be the last arg
+    args.add(
+        '"$outputFileNameWithPath"'); // outputFilePath must be the last arg
 
     final exe = 'ffmpeg ${args.join(' ')}';
     final res = await Process.start(exe, []);
