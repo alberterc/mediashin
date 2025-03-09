@@ -15,50 +15,37 @@ final router = GoRouter(
     GoRoute(
       path: '/',
       parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const HomePage()
-      ),
+      pageBuilder: (context, state) =>
+          MediashinRoutePage(key: state.pageKey, child: const HomePage()),
     ),
     GoRoute(
       path: '/about',
       parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const AboutPage()
-      ),
+      pageBuilder: (context, state) =>
+          MediashinRoutePage(key: state.pageKey, child: const AboutPage()),
     ),
     GoRoute(
       path: '/licenses',
       parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const LicensePage()
-      ),
+      pageBuilder: (context, state) =>
+          MediashinRoutePage(key: state.pageKey, child: const LicensePage()),
     ),
     GoRoute(
       path: '/analyze',
       parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const AnalyzePage()
-      ),
+      pageBuilder: (context, state) =>
+          MediashinRoutePage(key: state.pageKey, child: const AnalyzePage()),
     ),
     GoRoute(
       path: '/convert',
       parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const ConvertPage()
-      ),
+      pageBuilder: (context, state) =>
+          MediashinRoutePage(key: state.pageKey, child: const ConvertPage()),
     ),
     GoRoute(
-      path: '/extract',
-      parentNavigatorKey: rootNavigationkey,
-      pageBuilder: (context, state) => MediashinRoutePage(
-        key: state.pageKey,
-        child: const ExtractPage()
-      )
-    )
+        path: '/extract',
+        parentNavigatorKey: rootNavigationkey,
+        pageBuilder: (context, state) =>
+            MediashinRoutePage(key: state.pageKey, child: const ExtractPage()))
   ],
 );

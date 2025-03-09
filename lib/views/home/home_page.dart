@@ -16,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WindowListener {
-
   @override
   initState() {
     super.initState();
@@ -32,10 +31,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
   Future<Map<String, bool>> _checkDependencies() async {
     final ffmpeg = await FfmpegService.isInstalled();
     final ffprobe = await FfprobeService.isInstalled();
-    return {
-      'ffmpeg': ffmpeg,
-      'ffprobe': ffprobe
-    };
+    return {'ffmpeg': ffmpeg, 'ffprobe': ffprobe};
   }
 
   @override
@@ -47,10 +43,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const WindowTitleBar(),
-            Text(
-              'Mediashin',
-              style: FluentTheme.of(context).typography.title
-            ),
+            Text('Mediashin', style: FluentTheme.of(context).typography.title),
             // spacer,
             // SizedBox(
             //   width: 320,
@@ -70,106 +63,108 @@ class _HomePageState extends State<HomePage> with WindowListener {
             // ),
             spacer,
             FutureBuilder(
-              future: _checkDependencies(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const ProgressRing();
-                }
-                else {
-                  final ffmpeg = snapshot.data?['ffmpeg'] ?? false;
-                  final ffprobe = snapshot.data?['ffprobe'] ?? false;
-                  if (ffmpeg && ffprobe) {
-                    return SingleChildScrollView(
-                      child: _buildBody(context),
-                    );
-                  }
-                  else if (!ffmpeg && !ffprobe) {
-                    return Column(
-                      children: [
-                        Text(
-                          'Ffprobe and Ffmpeg are not found/installed.',
-                          style: FluentTheme.of(context).typography.bodyStrong,
-                        ),
-                        const SizedBox(height: 24.0),
-                        Button(
-                          child: const Text('Click here to download from https://ffmpeg.org/download.html'),
-                          onPressed: () => launchUrl(
-                            Uri.parse('https://ffmpeg.org/download.html'),
-                            mode: LaunchMode.externalApplication
+                future: _checkDependencies(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const ProgressRing();
+                  } else {
+                    final ffmpeg = snapshot.data?['ffmpeg'] ?? false;
+                    final ffprobe = snapshot.data?['ffprobe'] ?? false;
+                    if (ffmpeg && ffprobe) {
+                      return SingleChildScrollView(
+                        child: _buildBody(context),
+                      );
+                    } else if (!ffmpeg && !ffprobe) {
+                      return Column(
+                        children: [
+                          Text(
+                            'Ffprobe and Ffmpeg are not found/installed.',
+                            style:
+                                FluentTheme.of(context).typography.bodyStrong,
                           ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          'then put them in your system\'s PATH environment and restart Mediashin.',
-                          style: FluentTheme.of(context).typography.body,
-                        ),
-                      ],
-                    );
-                  }
-                  if (!ffprobe) {
-                    return Column(
-                      children: [
-                        Text(
-                          'Ffprobe is not found/installed.',
-                          style: FluentTheme.of(context).typography.bodyStrong,
-                        ),
-                        const SizedBox(height: 24.0),
-                        Button(
-                          child: const Text('Click here to download from https://ffmpeg.org/download.html'),
-                          onPressed: () => launchUrl(
-                            Uri.parse('https://ffmpeg.org/download.html'),
-                            mode: LaunchMode.externalApplication
+                          const SizedBox(height: 24.0),
+                          Button(
+                            child: const Text(
+                                'Click here to download from https://ffmpeg.org/download.html'),
+                            onPressed: () => launchUrl(
+                                Uri.parse('https://ffmpeg.org/download.html'),
+                                mode: LaunchMode.externalApplication),
                           ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          'then put it in your system\'s PATH environment and restart Mediashin.',
-                          style: FluentTheme.of(context).typography.body,
-                        ),
-                      ],
-                    );
-                  }
-                  else if (!ffmpeg) {
-                    return Column(
-                      children: [
-                        Text(
-                          'Ffmpeg is not found/installed.',
-                          style: FluentTheme.of(context).typography.bodyStrong,
-                        ),
-                        const SizedBox(height: 24.0),
-                        Button(
-                          child: const Text('Click here to download from https://ffmpeg.org/download.html'),
-                          onPressed: () => launchUrl(
-                            Uri.parse('https://ffmpeg.org/download.html'),
-                            mode: LaunchMode.externalApplication
+                          const SizedBox(width: 8.0),
+                          Text(
+                            'then put them in your system\'s PATH environment and restart Mediashin.',
+                            style: FluentTheme.of(context).typography.body,
                           ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          'then put it in your system\'s PATH environment and restart Mediashin.',
-                          style: FluentTheme.of(context).typography.body,
-                        ),
-                      ],
-                    );
+                        ],
+                      );
+                    }
+                    if (!ffprobe) {
+                      return Column(
+                        children: [
+                          Text(
+                            'Ffprobe is not found/installed.',
+                            style:
+                                FluentTheme.of(context).typography.bodyStrong,
+                          ),
+                          const SizedBox(height: 24.0),
+                          Button(
+                            child: const Text(
+                                'Click here to download from https://ffmpeg.org/download.html'),
+                            onPressed: () => launchUrl(
+                                Uri.parse('https://ffmpeg.org/download.html'),
+                                mode: LaunchMode.externalApplication),
+                          ),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            'then put it in your system\'s PATH environment and restart Mediashin.',
+                            style: FluentTheme.of(context).typography.body,
+                          ),
+                        ],
+                      );
+                    } else if (!ffmpeg) {
+                      return Column(
+                        children: [
+                          Text(
+                            'Ffmpeg is not found/installed.',
+                            style:
+                                FluentTheme.of(context).typography.bodyStrong,
+                          ),
+                          const SizedBox(height: 24.0),
+                          Button(
+                            child: const Text(
+                                'Click here to download from https://ffmpeg.org/download.html'),
+                            onPressed: () => launchUrl(
+                                Uri.parse('https://ffmpeg.org/download.html'),
+                                mode: LaunchMode.externalApplication),
+                          ),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            'then put it in your system\'s PATH environment and restart Mediashin.',
+                            style: FluentTheme.of(context).typography.body,
+                          ),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
                   }
-                  return const SizedBox.shrink();
-                }
-              }
-            ),
+                }),
           ],
         ),
         Positioned(
-          bottom: 7,
-          right: 7,
-          child: HyperlinkButton(
-            onPressed: () => context.push('/about'),
-            style: FluentTheme.of(context).buttonTheme.hyperlinkButtonStyle?.copyWith(
-              padding: const WidgetStatePropertyAll(EdgeInsets.all(8.0)),
-              textStyle: WidgetStatePropertyAll(FluentTheme.of(context).typography.caption)
-            ),
-            child: const Text('About'),
-          )
-        ),
+            bottom: 7,
+            right: 7,
+            child: HyperlinkButton(
+              onPressed: () => context.push('/about'),
+              style: FluentTheme.of(context)
+                  .buttonTheme
+                  .hyperlinkButtonStyle
+                  ?.copyWith(
+                      padding:
+                          const WidgetStatePropertyAll(EdgeInsets.all(8.0)),
+                      textStyle: WidgetStatePropertyAll(
+                          FluentTheme.of(context).typography.caption)),
+              child: const Text('About'),
+            )),
       ],
     );
   }
@@ -184,11 +179,10 @@ class _HomePageState extends State<HomePage> with WindowListener {
             child: GridView(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 267 / 100
-              ),
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 267 / 100),
               children: pages.map((page) {
                 return _buildCard(page.name, page.desc, context);
               }).toList(),
@@ -201,23 +195,29 @@ class _HomePageState extends State<HomePage> with WindowListener {
 
   Widget _buildCard(String title, String desc, BuildContext context) {
     return Button(
-    style: const ButtonStyle(
-      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
-      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(7.0)))),
-    ),
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: FluentTheme.of(context).typography.bodyStrong, textAlign: TextAlign.left),
-          const SizedBox(height: 4.0),
-          Text(desc, style: FluentTheme.of(context).typography.body, textAlign: TextAlign.left)
-        ],
+      style: const ButtonStyle(
+        padding: WidgetStatePropertyAll(
+            EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0)),
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)))),
       ),
-    ),
-    onPressed: () => GoRouter.of(context).push('/${title.toLowerCase()}'),
-  );
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: FluentTheme.of(context).typography.bodyStrong,
+                textAlign: TextAlign.left),
+            const SizedBox(height: 4.0),
+            Text(desc,
+                style: FluentTheme.of(context).typography.body,
+                textAlign: TextAlign.left)
+          ],
+        ),
+      ),
+      onPressed: () => GoRouter.of(context).push('/${title.toLowerCase()}'),
+    );
   }
 }

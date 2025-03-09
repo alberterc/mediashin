@@ -407,11 +407,12 @@ class _ExtractPageState extends State<ExtractPage> with WindowListener {
         if (line.contains('out_time_ms')) {
           try {
             final currentDuration =
-              double.parse(line.split('\n')[6].split('=').removeLast());
+                double.parse(line.split('\n')[6].split('=').removeLast());
             progressSetstate(() {
-              convertProgress = (currentDuration / 1000000 / totalDuration) * 100;
+              convertProgress =
+                  (currentDuration / 1000000 / totalDuration) * 100;
             });
-          } catch(_) {}
+          } catch (_) {}
         }
       });
 

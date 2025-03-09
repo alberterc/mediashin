@@ -23,3 +23,4 @@ class AppColors {
   static const Color onError = Color(0xFFFFFFFF);
   static const Color accentText = Color(0xFF99EBFF);
 }
+

@@ -13,20 +13,18 @@ void main() async {
   runApp(const MediashinApp());
 }
 
-
-void _initWindow() async{
+void _initWindow() async {
   const initSize = Size(960, 540);
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    size: initSize,
-    minimumSize: initSize,
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
-    windowButtonVisibility: false,
-    title: 'Mediashin'
-  );
+      size: initSize,
+      minimumSize: initSize,
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+      windowButtonVisibility: false,
+      title: 'Mediashin');
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
@@ -60,103 +58,65 @@ class _MediashinAppState extends State<MediashinApp> {
 }
 
 FluentThemeData _createTheme(Brightness brightness) => FluentThemeData(
-  brightness: brightness,
-  accentColor: AppColors.accentColor.toAccentColor(),
-  visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: Colors.transparent,
-  fontFamily: 'NotoSans',
-  acrylicBackgroundColor: const Color(0xFF545454),
-  menuColor: AppColors.primaryColor,
-  dialogTheme: ContentDialogThemeData(
-    titleStyle: const TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 20,
-      height: 28 / 20
+    brightness: brightness,
+    accentColor: AppColors.accentColor.toAccentColor(),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    scaffoldBackgroundColor: Colors.transparent,
+    fontFamily: 'NotoSans',
+    acrylicBackgroundColor: const Color(0xFF545454),
+    menuColor: AppColors.primaryColor,
+    dialogTheme: ContentDialogThemeData(
+      titleStyle: const TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 20,
+          height: 28 / 20),
+      decoration: BoxDecoration(
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: kElevationToShadow[6]),
+      actionsDecoration: const BoxDecoration(
+          color: AppColors.primaryColorDark,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))),
     ),
-    decoration: BoxDecoration(
-      color: AppColors.primaryColor,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: kElevationToShadow[6]
-    ),
-    actionsDecoration: const BoxDecoration(
-      color: AppColors.primaryColorDark,
-      borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))
-    ),
-  ),
-  buttonTheme: const ButtonThemeData(
-    hyperlinkButtonStyle: ButtonStyle(
-      textStyle: WidgetStatePropertyAll(
-        TextStyle(
-          fontVariations: [
-            FontVariation('wght', 400)
-          ],
+    buttonTheme: const ButtonThemeData(
+        hyperlinkButtonStyle: ButtonStyle(
+            textStyle: WidgetStatePropertyAll(TextStyle(
+                fontVariations: [FontVariation('wght', 400)],
+                fontSize: 14,
+                height: 20 / 14)),
+            padding:
+                WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8.0)))),
+    typography: const Typography.raw(
+      caption: TextStyle(
+          fontVariations: [FontVariation('wght', 400)],
+          fontSize: 12,
+          height: 16 / 12),
+      body: TextStyle(
+          fontVariations: [FontVariation('wght', 400)],
           fontSize: 14,
-          height: 20 / 14
-        )
-      ),
-      padding: WidgetStatePropertyAll(
-        EdgeInsets.symmetric(vertical: 8.0)
-      )
-    )
-  ),
-  typography: const Typography.raw(
-    caption: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 400)
-      ],
-      fontSize: 12,
-      height: 16 / 12
-    ),
-    body: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 400)
-      ],
-      fontSize: 14,
-      height: 20 / 14
-    ),
-    bodyStrong: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 14,
-      height: 20 / 14
-    ),
-    bodyLarge: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 400)
-      ],
-      fontSize: 18,
-      height: 24 / 18
-    ),
-    subtitle: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 20,
-      height: 28 / 20
-    ),
-    title: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 28,
-      height: 36 / 28
-    ),
-    titleLarge: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 40,
-      height: 52 / 40
-    ),
-    display: TextStyle(
-      fontVariations: [
-        FontVariation('wght', 600)
-      ],
-      fontSize: 68,
-      height: 92 / 68
-    ),
-  )
-);
+          height: 20 / 14),
+      bodyStrong: TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 14,
+          height: 20 / 14),
+      bodyLarge: TextStyle(
+          fontVariations: [FontVariation('wght', 400)],
+          fontSize: 18,
+          height: 24 / 18),
+      subtitle: TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 20,
+          height: 28 / 20),
+      title: TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 28,
+          height: 36 / 28),
+      titleLarge: TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 40,
+          height: 52 / 40),
+      display: TextStyle(
+          fontVariations: [FontVariation('wght', 600)],
+          fontSize: 68,
+          height: 92 / 68),
+    ));
