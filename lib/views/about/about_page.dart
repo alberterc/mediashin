@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mediashin/components/hyperlink.dart';
-import 'package:mediashin/components/window_title_bar.dart';
+import 'package:mediashin/widgets/hyperlink.dart';
+import 'package:mediashin/widgets/window_title_bar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutPage extends StatefulWidget {
@@ -12,9 +12,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  Map<String, String> appInfo = {
-    'version': 'N/A'
-  };
+  Map<String, String> appInfo = {'version': 'N/A'};
 
   @override
   void initState() {
@@ -30,13 +28,7 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   TableRow _buildTableRow(Widget label, Widget value) {
-    return TableRow(
-      children: [
-        label,
-        const Center(child: Text(':')),
-        value
-      ]
-    );
+    return TableRow(children: [label, const Center(child: Text(':')), value]);
   }
 
   @override
@@ -49,10 +41,7 @@ class _AboutPageState extends State<AboutPage> {
           backButton: true,
           title: Text('Mediashin'),
         ),
-        Text(
-          'About',
-          style: FluentTheme.of(context).typography.title
-        ),
+        Text('About', style: FluentTheme.of(context).typography.title),
         spacer,
         Text(
           'Mediashin',
@@ -74,39 +63,37 @@ class _AboutPageState extends State<AboutPage> {
             },
             children: [
               _buildTableRow(
-                const Text('Version'),
-                Text('v${appInfo['version']!}')
-              ),
+                  const Text('Version'), Text('v${appInfo['version']!}')),
               _buildTableRow(
-                const Text('Author'),
-                const Hyperlink(
-                  text: 'alberterc',
-                  url: 'https://github.com/alberterc'
-                )
-              ),
+                  const Text('Author'),
+                  const Hyperlink(
+                      text: 'alberterc', url: 'https://github.com/alberterc')),
               _buildTableRow(
-                const Text('Repository'),
-                const Hyperlink(
-                  text: 'github.com/alberterc/mediashin',
-                  url: 'https://github.com/alberterc/mediashin',
-                )
-              ),
+                  const Text('Repository'),
+                  const Hyperlink(
+                    text: 'github.com/alberterc/mediashin',
+                    url: 'https://github.com/alberterc/mediashin',
+                  )),
               _buildTableRow(
-                const Text('License'),
-                const Hyperlink(
-                  text: 'BSD-4-Clause',
-                  url: 'https://raw.githubusercontent.com/alberterc/mediashin/refs/heads/main/LICENSE',
-                )
-              ),
+                  const Text('License'),
+                  const Hyperlink(
+                    text: 'BSD-4-Clause',
+                    url:
+                        'https://raw.githubusercontent.com/alberterc/mediashin/refs/heads/main/LICENSE',
+                  )),
             ],
           ),
         ),
         const SizedBox(height: 16),
         HyperlinkButton(
           onPressed: () => GoRouter.of(context).push('/licenses'),
-          style: FluentTheme.of(context).buttonTheme.hyperlinkButtonStyle?.copyWith(
-            padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0)),
-          ),
+          style: FluentTheme.of(context)
+              .buttonTheme
+              .hyperlinkButtonStyle
+              ?.copyWith(
+                padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0)),
+              ),
           child: const Text('View Licenses'),
         )
       ],

@@ -16,9 +16,7 @@ class PaneItemBody extends StatelessWidget {
           header,
           const SizedBox(height: 24),
           Expanded(
-            child: SingleChildScrollView(
-              child: content
-            ),
+            child: SingleChildScrollView(child: content),
           )
         ],
       ),

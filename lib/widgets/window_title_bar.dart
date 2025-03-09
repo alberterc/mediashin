@@ -3,11 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:window_manager/window_manager.dart';
 
 class WindowTitleBar extends StatefulWidget {
-  const WindowTitleBar({
-    super.key,
-    this.backButton = false,
-    this.title
-  });
+  const WindowTitleBar({super.key, this.backButton = false, this.title});
 
   final bool backButton;
   final Widget? title;
@@ -47,28 +43,26 @@ class _WindowTitleBarState extends State<WindowTitleBar> with WindowListener {
       child: Row(
         children: [
           widget.backButton
-            ? BackButtonTwo(
-              onPressed: () => GoRouter.of(context).pop(),
-            )
-            : const SizedBox(),
+              ? BackButtonTwo(
+                  onPressed: () => GoRouter.of(context).pop(),
+                )
+              : const SizedBox(),
           Expanded(
-            child: DragToMoveArea(
-              child: SizedBox(
-                height: double.infinity,
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: DefaultTextStyle(
-                        style: FluentTheme.of(context).typography.caption!,
-                        child: widget.title ?? const SizedBox(),
-                      ),
-                    ),
-                  ],
+              child: DragToMoveArea(
+                  child: SizedBox(
+            height: double.infinity,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: DefaultTextStyle(
+                    style: FluentTheme.of(context).typography.caption!,
+                    child: widget.title ?? const SizedBox(),
+                  ),
                 ),
-              )
-            )
-          ),
+              ],
+            ),
+          ))),
           Row(
             children: [
               WindowCaptionButton.minimize(
@@ -110,10 +104,7 @@ class _WindowTitleBarState extends State<WindowTitleBar> with WindowListener {
 }
 
 class BackButtonTwo extends StatelessWidget {
-  const BackButtonTwo({
-    super.key,
-    this.onPressed
-  });
+  const BackButtonTwo({super.key, this.onPressed});
 
   final VoidCallback? onPressed;
 
@@ -122,34 +113,26 @@ class BackButtonTwo extends StatelessWidget {
     var res = FluentTheme.of(context).resources;
     return Center(
       child: Button(
-        onPressed: onPressed,
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.isPressed) {
-              return const Color(0xffC42B1C).withOpacity(0.9);
-            }
-            else if (states.isHovered) {
-              return const Color(0xffC42B1C);
-            }
-            else if (states.isDisabled) {
-              return res.controlFillColorDisabled;
-            }
-            else {
-              return Colors.transparent;
-            }
-          }),
-          shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
-          padding: const WidgetStatePropertyAll(EdgeInsets.all(0)),
-        ),
-        child: Container(
-          constraints: const BoxConstraints(minWidth: 46, minHeight: 32),
-          child: const Icon(
-            FluentIcons.back,
-            color: Colors.white,
-            size: 12.0
-          )
-        )
-      ),
+          onPressed: onPressed,
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.isPressed) {
+                return const Color(0xffC42B1C).withOpacity(0.9);
+              } else if (states.isHovered) {
+                return const Color(0xffC42B1C);
+              } else if (states.isDisabled) {
+                return res.controlFillColorDisabled;
+              } else {
+                return Colors.transparent;
+              }
+            }),
+            shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+            padding: const WidgetStatePropertyAll(EdgeInsets.all(0)),
+          ),
+          child: Container(
+              constraints: const BoxConstraints(minWidth: 46, minHeight: 32),
+              child: const Icon(FluentIcons.back,
+                  color: Colors.white, size: 12.0))),
     );
   }
 }

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-class Ffprobe {
-  Future<bool> isInstalled() async {
+class FfprobeService {
+  static Future<bool> isInstalled() async {
     final res = await Process.run('ffprobe', ['-version']);
     if (res.exitCode == 0 && res.stdout.toString().contains('ffprobe')) {
       return true;
@@ -21,31 +21,26 @@ class Ffprobe {
     return false;
   }
 
-  Future<double> getTotalDuration({
-    required String filePath
-  }) async {
-    final ffprobe = Ffprobe();
+  Future<double> getTotalDuration({required String filePath}) async {
+    final ffprobe = FfprobeService();
     final res = await ffprobe.run(
-      filePath: filePath,
-      printFormat: 'compact',
-      useSexagesimal: false,
-      entries: ['format=duration']
-    );
+        filePath: filePath,
+        printFormat: 'compact',
+        useSexagesimal: false,
+        entries: ['format=duration']);
 
     if (res.isNotEmpty) {
       return double.parse(res.split('=').removeLast());
-    }
-    else {
+    } else {
       return 0.0;
     }
   }
 
-  Future<String> run({
-    required String filePath,
-    required String printFormat,
-    required bool useSexagesimal,
-    required List<String> entries
-  }) async {
+  Future<String> run(
+      {required String filePath,
+      required String printFormat,
+      required bool useSexagesimal,
+      required List<String> entries}) async {
     List<String> args = [
       '-of $printFormat',
       '-i "$filePath"',

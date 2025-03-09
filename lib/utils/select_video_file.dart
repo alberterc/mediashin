@@ -5,11 +5,10 @@ Future<String> selectVideoFile() async {
       type: FileType.video,
       allowMultiple: false,
       withData: false,
-      withReadStream: false
-    );
+      withReadStream: false);
 
-    if (filePickerResult != null) {
-      return filePickerResult.files.first.path!;
-    }
-    return '';
+  if (filePickerResult != null) {
+    return filePickerResult.files.first.path!;
+  }
+  return '';
 }

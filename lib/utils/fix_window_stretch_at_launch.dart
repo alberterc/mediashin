@@ -8,12 +8,8 @@ void fixWindowStretchAtLaunch() {
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) async {
       await Future<void>.delayed(const Duration(milliseconds: 100), () {
         windowManager.getSize().then((Size value) {
-          windowManager.setSize(
-            Size(value.width + 1, value.height + 1)
-          );
-          windowManager.setSize(
-            Size(value.width, value.height)
-          );
+          windowManager.setSize(Size(value.width + 1, value.height + 1));
+          windowManager.setSize(Size(value.width, value.height));
         });
       });
     });
