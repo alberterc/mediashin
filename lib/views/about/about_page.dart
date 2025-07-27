@@ -77,7 +77,7 @@ class _AboutPageState extends State<AboutPage> {
               _buildTableRow(
                   const Text('License'),
                   const Hyperlink(
-                    text: 'BSD-4-Clause',
+                    text: 'BSD-3-Clause',
                     url:
                         'https://raw.githubusercontent.com/alberterc/mediashin/refs/heads/main/LICENSE',
                   )),
